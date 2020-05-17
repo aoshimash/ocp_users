@@ -10,12 +10,12 @@ OpenShift Conatiner Platform でユーザー管理を行うAnsible Role。
 ### できること
 
 - ユーザーの作成
-  - [HTPasswd Secret の新規作成 or 編集](https://access.redhat.com/documentation/en-us/openshift_container_platform/4.4/html-single/authentication/index#identity-provider-creating-htpasswd-secret_configuring-htpasswd-identity-provider)
+  - [HTPasswd Secret の新規作成・編集](https://access.redhat.com/documentation/en-us/openshift_container_platform/4.4/html-single/authentication/index#identity-provider-creating-htpasswd-secret_configuring-htpasswd-identity-provider)
   - [HTPasswd CR の編集](https://access.redhat.com/documentation/en-us/openshift_container_platform/4.4/html-single/authentication/index#identity-provider-htpasswd-CR_configuring-htpasswd-identity-provider)
   - `ClusterRoleBinding` の作成（"既存の"Roleと作成したユーザーの紐付け）
 
 - ユーザーの削除
-  - [HTPasswd Secret の編集 or 削除](https://access.redhat.com/documentation/en-us/openshift_container_platform/4.4/html-single/authentication/index#identity-provider-htpasswd-update-users_configuring-htpasswd-identity-provider) Secretの中身が空の場合はSecretを削除する
+  - [HTPasswd Secret の編集・削除](https://access.redhat.com/documentation/en-us/openshift_container_platform/4.4/html-single/authentication/index#identity-provider-htpasswd-update-users_configuring-htpasswd-identity-provider) (Secretの中身が空の場合はSecretを削除する)
   - [HTPasswd CR の編集](https://access.redhat.com/documentation/en-us/openshift_container_platform/4.4/html-single/authentication/index#identity-provider-htpasswd-CR_configuring-htpasswd-identity-provider) 登録されているHTPasswd Secretの中身が空の場合は登録を削除する
   - `User`オブジェクトの削除
   - `Identity`オブジェクトの削除
