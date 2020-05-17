@@ -1,0 +1,7 @@
+# users
+---
+- name: "作成したユーザーでログインできるか確認({{ users | map(attribute='name') | join(', ') }})"
+  include_tasks: "./partials/login_check/inner_loop.yml"
+  loop: "{{ users }}"
+  loop_control:
+    loop_var: "user"

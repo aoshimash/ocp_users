@@ -1,0 +1,21 @@
+---
+- name: htpasswd情報を持つSecretにユーザー追加
+  import_tasks: "partials/add_users_into_secret.yml"
+  vars:
+    secret: "{{ ocp_users_oauth_idp.htpasswd_secret }}"
+    users: "{{ ocp_users_users }}"
+
+- name: OAuthの編集
+  import_tasks: "partials/add_idp_into_oauth.yml"
+  vars:
+    idp: "{{ ocp_users_oauth_idp }}"
+
+- name: 作成したユーザーでログインできるか確認
+  import_tasks: "partials/login_check.yml"
+  vars:
+    users: "{{ ocp_users_users }}"
+
+- name: ClusterRoleBindingを作成
+  import_tasks: "./partials/create_crb.yml"
+  vars:
+    users: "{{ ocp_users_users }}"

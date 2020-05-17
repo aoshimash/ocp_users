@@ -1,0 +1,18 @@
+# idp.name
+---
+- name: OAuth情報を取得
+  k8s_info:
+    api_version: config.openshift.io/v1
+    kind: OAuth
+    name: "cluster"
+  register: _oauth_info
+
+- name: "認証プロバイダリストから対象プロバイダ({{ idp.name }})を削除"
+  k8s:
+    state: present
+    name: "cluster"
+    definition:
+      apiVersion: config.openshift.io/v1
+      kind: OAuth
+      spec:
+        identityProviders: "{{ _oauth_info.resources[0].spec.identityProviders | rejectattr('name', 'eq', idp.name) | list }}"

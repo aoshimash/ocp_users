@@ -1,0 +1,33 @@
+---
+- hosts: localhost
+  connection: local
+  vars:
+    ocp_users_host:
+    ocp_users_api_key:
+    ocp_users_validate_certs: False
+    ocp_users_status: present
+    ocp_users_users:
+    - name: admin
+      password: admin
+      crbs:
+      - name: "cluster-admin-admin"
+        clusterrole: cluster-admin
+    - name: user1
+      password: user1
+      crbs: []
+    - name: user2
+      password: user2
+      crbs:
+      - name: "cluster-reader-user2"
+        clusterrole: cluster-reader
+      - name: "cluster-monitoring-view-user2"
+        clusterrole: cluster-monitoring-view
+  module_defaults:
+    group/k8s:
+      host: "{{ ocp_users_host }}"
+      api_key: "{{ ocp_users_api_key }}"
+      validate_certs: "{{ ocp_users_validate_certs }}"
+  tasks:
+  - name: ユーザー作成
+    import_role:
+      name: ../../ocp_users

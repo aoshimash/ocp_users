@@ -1,0 +1,8 @@
+---
+- name: ユーザー作成
+  include_tasks: add_users.yml
+  when: ocp_users_status == "present"
+
+- name: ユーザー削除
+  include_tasks: remove_users.yml
+  when: ocp_users_status == "absent"

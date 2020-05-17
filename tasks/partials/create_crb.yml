@@ -1,0 +1,6 @@
+---
+- name: "ClusterRoleBindingを作成({{ users | map(attribute='crbs') | flatten | map(attribute='name') | join(', ') }})"
+  include_tasks: "./partials/create_crb/inner_loop.yml"
+  loop: "{{ users }}"
+  loop_control:
+    loop_var: "user"

@@ -1,0 +1,40 @@
+# idp.name
+# idp.htpasswd_secret
+---
+- name: OAuth情報を取得
+  k8s_info:
+    api_version: config.openshift.io/v1
+    kind: OAuth
+    name: "cluster"
+  register: _oauth_info
+
+- name: 認証プロバイダ情報を定義
+  set_fact:
+    _pre_idps: []
+
+- name: 認証プロバイダ情報を登録
+  set_fact:
+    _pre_idps: "{{ _oauth_info.resources[0].spec.identityProviders }}"
+  when: _oauth_info.resources[0].spec.identityProviders is defined
+
+- name: debug - 更新前の認証プロバイダ情報
+  debug:
+    msg: "{{ _pre_idps }}"
+
+- name: 認証プロバイダ情報を更新
+  set_fact:
+    _post_idps: "{{ _pre_idps | create_new_idps(idp.htpasswd_secret, idp.name) }}"
+
+- name: debug - 更新後の認証プロバイダ情報
+  debug:
+    msg: "{{ _post_idps }}"
+
+- name: 認証プロバイダリストに新規プロバイダ情報を追加
+  k8s:
+    state: present
+    name: "cluster"
+    definition:
+      apiVersion: config.openshift.io/v1
+      kind: OAuth
+      spec:
+        identityProviders: "{{ _post_idps }}"

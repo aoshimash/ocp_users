@@ -1,0 +1,14 @@
+---
+ocp_users_host:
+ocp_users_api_key:
+ocp_users_validate_certs: no
+ocp_users_oauth_idp:
+  name: htpasswd
+  htpasswd_secret: htpasswd-secret
+ocp_users_users:
+- name:
+  password:
+  crbs:
+  - name:
+    clusterrole:
+    user:

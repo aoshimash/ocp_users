@@ -1,0 +1,61 @@
+---
+- name: ユーザー情報をhtpasswdのSecretから削除
+  import_tasks: "partials/remove_users_from_secret.yml"
+  vars:
+    htpasswd_secret: "{{ ocp_users_oauth_idp.htpasswd_secret }}"
+    users: "{{ ocp_users_users }}"
+
+- name: Secret情報を取得
+  k8s_info:
+    api_version: v1
+    kind: Secret
+    name: "{{ ocp_users_oauth_idp.htpasswd_secret }}"
+    namespace: openshift-config
+  register: _secret_info
+
+- name: Secret情報が存在しない場合は以下の処理を実行
+  when: >
+    _secret_info.resources[0] is defined
+    and _secret_info.resources[0].data.htpasswd == ""
+  block:
+  - name: Secretを削除
+    k8s:
+      state: absent
+      namespace: openshift-config
+      name: "{{ ocp_users_oauth_idp.htpasswd_secret }}"
+      definition:
+        apiVersion: v1
+        kind: Secret
+  - name: OAuthから対象Secretのidpを削除
+    import_tasks: "partials/remove_idp_from_oauth.yml"
+    vars:
+      idp:
+        name: "{{ ocp_users_oauth_idp.name }}"
+
+- name: Userの削除
+  k8s:
+    state: absent
+    name: "{{ item.name }}"
+    definition:
+      apiVersion: user.openshift.io/v1
+      kind: User
+  loop: "{{ ocp_users_users }}"
+
+- name: Identityの削除
+  k8s:
+    state: absent
+    name: "{{ ocp_users_oauth_idp.name }}:{{ item.name }}"
+    definition:
+      apiVersion: user.openshift.io/v1
+      kind: Identity
+  loop: "{{ ocp_users_users }}"
+
+- name: ClusterRoleBindingを削除
+  k8s:
+    state: absent
+    namespace: openshift-config
+    name: "{{ item }}"
+    definition:
+      apiVersion: rbac.authorization.k8s.io/v1
+      kind: ClusterRoleBinding
+  loop: "{{ ocp_users_users | map(attribute='crbs') | flatten | map(attribute='name') | list }}"

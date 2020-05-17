@@ -1,0 +1,9 @@
+---
+- name: "ログイン可能か確認({{ user.name }})"
+  k8s_auth:
+    username: "{{ user.name }}"
+    password: "{{ user.password }}"
+  register: _user_login_info
+  until: _user_login_info.failed != true
+  retries: 10
+  delay: 10
