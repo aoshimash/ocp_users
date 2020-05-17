@@ -1,14 +1,32 @@
 ---
+# openshift API にアクセスするためのURL
 ocp_users_host:
+
+# API認証に使用するtoken
 ocp_users_api_key:
+
+# APIサーバーのSSL認証を検証するかしないか (yes/no)
 ocp_users_validate_certs: no
+
+# アイデンティティープロバイダー情報
 ocp_users_oauth_idp:
+  # アイデンティティープロバイダの表示名（Webコンソールのログイン画面に表示される）
   name: htpasswd
+  # HTPasswd Secretの名前
   htpasswd_secret: htpasswd-secret
+
+# ユーザー作成の場合は"present"、削除の場合は"absent"を設定する
+ocp_users_status:
+
+# ユーザー情報
 ocp_users_users:
+  # ユーザー名
 - name:
+  # ユーザーパスワード (ユーザーを削除する場合は不要)
   password:
+  # ClusterRoleBinding情報 (削除時は削除したいCRBのみ記載する) 
   crbs:
+    # CRBの名前
   - name:
+    # CRの名前
     clusterrole:
-    user:
